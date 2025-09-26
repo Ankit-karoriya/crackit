@@ -1,16 +1,30 @@
-# React + Vite
+# CrackIT 🎓
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+CrackIT is a web platform where students can easily access and explore **previous year university question papers**.  
+The goal is to make exam preparation easier by providing quick access to past papers, organized by **university, course, and subject**.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
+- 📂 Browse previous year question papers.  
+- 🏫 Filter papers by **university, course, and subject**.  
+- 🔍 Search functionality for quick access.  
+- 🎨 Simple and user-friendly interface.  
+- 📱 Responsive design for mobile and desktop.  
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🛠️ Tech Stack
+- **Frontend:** React.js, Tailwind CSS  
+- **Backend:** Node.js, Express.js (if added)  
+- **Database:** MongoDB/MySQL (depending on setup)  
+- **Version Control:** Git & GitHub  
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🚀 Getting Started
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/<your-username>/crackit.git
+cd crackit

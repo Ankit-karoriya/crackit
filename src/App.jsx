@@ -1,10 +1,19 @@
-import { useState } from 'react'
+import { Routes, Route } from 'react-router-dom'
+import HomePage from './components/HomePage.jsx'
+import UploadPaper from './components/UploadPaper.jsx'
+import AdminPanel from './components/AdminPanel.jsx'
+import Layout from './components/Layout.jsx'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
+      <Routes>
+        <Route path='/' element={<Layout />}>
+          <Route path='/home' element={<HomePage/>}/>
+          <Route path='/upload' element={<UploadPaper />} />
+          <Route path='/admin' element={<AdminPanel />} />
+        </Route>
+      </Routes>
     </>
   )
 }
