@@ -16,7 +16,7 @@ function Navbar() {
       {/* Buttons having different pages */}
       <div className='hidden md:flex gap-8'>
         <NavLink
-          to='/home'
+          to='/'
           className={({ isActive }) => `flex gap-2 w-fit h-fit px-3 py-2 hover:bg-gray-100 hover:rounded-xl duration-200 ${isActive ? "bg-gray-200 rounded-xl" : ""}`}>
           <div className='text-xl'><FontAwesomeIcon icon={["fas", "house"]} /></div>
           <div>Browse Papers</div>

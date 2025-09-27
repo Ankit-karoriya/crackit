@@ -16,7 +16,7 @@ The goal is to make exam preparation easier by providing quick access to past pa
 
 ## 🛠️ Tech Stack
 - **Frontend:** React.js, Tailwind CSS  
-- **Backend:** Node.js, Express.js (if added)  
+- **Backend:** Node.js, Express.js  
 - **Database:** MongoDB/MySQL (depending on setup)  
 - **Version Control:** Git & GitHub  
 
@@ -26,5 +26,5 @@ The goal is to make exam preparation easier by providing quick access to past pa
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/<your-username>/crackit.git
+git clone https://github.com/Ankit-karoriya/crackit.git
 cd crackit
