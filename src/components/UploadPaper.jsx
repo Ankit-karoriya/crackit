@@ -67,14 +67,14 @@ function UploadPaper() {
                 <div className='space-y-2'>
                   <label className=' text-base font-medium text-slate-900' htmlFor="">Semester *</label>
                   <select className='flex h-10 w-full items-center justify-between rounded-md border bg-background px-3 py-2 text-sm border-slate-300 focus:border-slate-900' name="" id="">
-                    <option value="2025">Semester 1</option>
-                    <option value="2024">Semester 2</option>
-                    <option value="2023">Semester 3</option>
-                    <option value="2022">Semester 4</option>
-                    <option value="2021">Semester 5</option>
-                    <option value="2020">Semester 6</option>
-                    <option value="2019">Semester 7</option>
-                    <option value="2018">Semester 8</option>
+                    <option value="Semester 1">Semester 1</option>
+                    <option value="Semester 2">Semester 2</option>
+                    <option value="Semester 3">Semester 3</option>
+                    <option value="Semester 4">Semester 4</option>
+                    <option value="Semester 5">Semester 5</option>
+                    <option value="Semester 6">Semester 6</option>
+                    <option value="Semester 7">Semester 7</option>
+                    <option value="Semester 8">Semester 8</option>
                   </select>
                 </div>
 
