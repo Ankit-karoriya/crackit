@@ -3,7 +3,7 @@ import { Link, NavLink } from 'react-router-dom'
 
 function Navbar() {
   return (
-    <div className='h-fit flex justify-between p-3 md:px-4 lg:px-5'>
+    <header className='h-fit flex justify-between p-3 md:px-4 lg:px-5'>
       {/* Logo and name */}
       <Link to="/home" className='flex gap-2 cursor-pointer'>
         <div className='text-3xl lg:text-5xl'><FontAwesomeIcon icon={["fas", "book-open"]} /></div>
@@ -46,7 +46,7 @@ function Navbar() {
         <div className='flex bg-orange-400 text-white h-10 w-10 rounded-full items-center justify-center text-lg font-semibold'>B</div>
         <button className='text-xl cursor-pointer hover:bg-gray-200 p-2 duration-200 hover:rounded-lg'><FontAwesomeIcon icon={["fas", "right-from-bracket"]} /></button>
       </div>
-    </div>
+    </header>
   )
 }
 

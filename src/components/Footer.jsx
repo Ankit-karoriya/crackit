@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 function Footer() {
   return (
     <>
-      <div className='flex flex-col px-4 py-6 bg-slate-800'>
+      <footer className='flex flex-col px-4 py-6 bg-slate-800'>
         {/* Footer details */}
         <div className='flex flex-col md:flex-row justify-between md:px-9 gap-6'>
           <div className='flex flex-col gap-2 md:w-3/5 md:gap-3'>
@@ -38,7 +38,7 @@ function Footer() {
         <div className='text-center text-gray-400'>
           &copy; 2025 ExamVault. Built for academic excellence.
         </div>
-      </div>
+      </footer>
     </>
   )
 }
