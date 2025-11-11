@@ -26,7 +26,12 @@ const register = async (req, res) => {
             return res.status(500).json({ message: "Registration failed, User is not registered" })
         }
 
-        return res.status(201).json({
+        const accessToken = generateAccessToken({email, fullname});
+
+        return res
+        .status(201)
+        .cookie("AccessToken", accessToken, {httpOnly: true, secure: process.env.NODE_ENV === "production"})
+        .json({
             message: "User registered successfully",
             user: {
                 id: userCreated._id,

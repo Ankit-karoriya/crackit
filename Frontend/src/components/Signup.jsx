@@ -1,7 +1,11 @@
-import { useState } from 'react';
-import {Link} from 'react-router-dom';
+import { useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { AuthContext } from '../context/AuthContext.jsx';
 
 function Signup() {
+  const navigate = useNavigate();
+  const { auth, setAuth, user } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [fullname, setFullname] = useState('');
   const [fullnameError, setFullnameError] = useState('');
@@ -18,6 +22,7 @@ function Signup() {
       setFullname(value);
       setFullnameError('');
     }
+    
     else {
       setFullnameError('Only letters and spaces are allowed');
     }
@@ -27,11 +32,23 @@ function Signup() {
     const value = e.target.value;
     setPassword(value);
   }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post("http://localhost:8000/api/users/register", { email, fullname, password }, {withCredentials: true})
+        console.log(response.data.message);
+        navigate('/');
+    } catch (error) {
+      console.log(error.response.data.message);
+    }
+  }
   return (
     <div className="flex h-screen items-center justify-center dark:bg-slate-800">
 
       <form
-        className="bg-white dark:bg-gray-600 shadow-2xl rounded-2xl p-8 w-full max-w-md"
+        className="bg-white dark:bg-gray-600 shadow-2xl rounded-2xl p-8 w-full max-w-md" onSubmit={handleSubmit}
       >
         <h2 className="text-2xl font-semibold text-center mb-6 text-slate-500 dark:text-white">
           Create Account

@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
+import axios from 'axios';
 
 function Login() {
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -15,11 +17,24 @@ function Login() {
         setPassword(value);
     }
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await axios.post("http://localhost:8000/api/users/login", {email, password}, {withCredentials: true});
+            console.log(response.data.message);
+            navigate('/');
+        } catch (error) {
+            console.log(error.response.data.message);
+        }
+    }
+
 
   return (
     <div className='flex h-screen items-center justify-center dark:bg-gray-800'>
             <form
                 className='bg-white dark:bg-gray-600 shadow-2xl rounded-2xl p-8 w-full max-w-md'
+                onSubmit={handleSubmit}
             >
                 <h1 className='text-2xl text-center text-slate-500 dark:text-slate-100 font-bold'>Login</h1>
                 <br />

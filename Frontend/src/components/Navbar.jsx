@@ -1,7 +1,18 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
 function Navbar() {
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      const res = await axios.post("http://localhost:8000/api/users/logout");
+      console.log(res.data);
+      navigate('/login');
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <header className='h-fit flex justify-between p-3 md:px-4 lg:px-5 border-b-2'>
       {/* Logo and name */}
@@ -22,16 +33,16 @@ function Navbar() {
           <div>Browse Papers</div>
         </NavLink>
 
-        <NavLink 
-        to='/upload'
-        className={({isActive}) => `flex gap-2 w-fit h-fit px-3 py-2 hover:bg-blue-100 hover:rounded-xl duration-200 ${isActive ? "bg-blue-200 rounded-xl text-blue-900" : ""}`}>
+        <NavLink
+          to='/upload'
+          className={({ isActive }) => `flex gap-2 w-fit h-fit px-3 py-2 hover:bg-blue-100 hover:rounded-xl duration-200 ${isActive ? "bg-blue-200 rounded-xl text-blue-900" : ""}`}>
           <div className='text-xl'><FontAwesomeIcon icon={["fas", "arrow-up-from-bracket"]} /></div>
           <div>Upload Paper</div>
         </NavLink>
 
-        <NavLink 
-        to='/admin'
-        className={({isActive}) => `flex gap-2 w-fit h-fit px-3 py-2 hover:bg-orange-100 hover:rounded-xl duration-200 ${isActive ? "bg-amber-200 text-orange-900 rounded-xl" : ""}`}>
+        <NavLink
+          to='/admin'
+          className={({ isActive }) => `flex gap-2 w-fit h-fit px-3 py-2 hover:bg-orange-100 hover:rounded-xl duration-200 ${isActive ? "bg-amber-200 text-orange-900 rounded-xl" : ""}`}>
           <div className='text-xl'><FontAwesomeIcon icon={["fas", "shield"]} /></div>
           <div>Admin Panel</div>
         </NavLink>
@@ -44,7 +55,10 @@ function Navbar() {
           <p className='text-sm text-gray-500 text-right'>admin</p>
         </div>
         <div className='flex bg-orange-400 text-white h-10 w-10 rounded-full items-center justify-center text-lg font-semibold'>B</div>
-        <button className='text-xl cursor-pointer hover:bg-gray-200 p-2 duration-200 hover:rounded-lg'><FontAwesomeIcon icon={["fas", "right-from-bracket"]} /></button>
+        <button
+          className='text-xl cursor-pointer hover:bg-gray-200 p-2 duration-200 hover:rounded-lg'
+          onClick={handleLogout}
+        ><FontAwesomeIcon icon={["fas", "right-from-bracket"]} /></button>
       </div>
     </header>
   )
