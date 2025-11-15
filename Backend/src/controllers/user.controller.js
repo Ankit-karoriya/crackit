@@ -30,7 +30,7 @@ const register = async (req, res) => {
 
         return res
         .status(201)
-        .cookie("AccessToken", accessToken, {httpOnly: true, secure: process.env.NODE_ENV === "production"})
+        .cookie("AccessToken", accessToken, {httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: 'strict'})
         .json({
             message: "User registered successfully",
             user: {
@@ -69,7 +69,7 @@ const login = async (req, res) => {
 
         return res
             .status(200)
-            .cookie("AccessToken", accessToken, { httpOnly: true, secure: process.env.NODE_ENV === "production" })
+            .cookie("AccessToken", accessToken, {httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: 'strict'})
             .json({ message: "User loggedin successfully", loginuser });
 
     } catch (error) {
@@ -81,7 +81,7 @@ const logout = async (req, res) => {
     try {
         return res
             .status(200)
-            .clearCookie("AccessToken")
+            .clearCookie("AccessToken", {httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: 'strict'})
             .json({ message: "User Logout Successfully" });
     } catch (error) {
         res.status(500).json({ message: "Something went wrong in logout controller" });

@@ -1,11 +1,15 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import axios from 'axios';
+import { AlertContext } from '../context/AlertContext.jsx';
+import { AuthContext } from '../context/AuthContext.jsx';
 
 function Login() {
     const navigate = useNavigate();
+    const {setAuth, setUser} = useContext(AuthContext)
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const {setAlert} = useContext(AlertContext);
 
     const handleUsernameChange = (e) => {
         const value = e.target.value;
@@ -22,10 +26,12 @@ function Login() {
 
         try {
             const response = await axios.post("http://localhost:8000/api/users/login", {email, password}, {withCredentials: true});
-            console.log(response.data.message);
+            setAuth(true);
+            setUser(response?.data?.loginuser);
+            setAlert({status: "success", message: response.data.message || ""});
             navigate('/');
         } catch (error) {
-            console.log(error.response.data.message);
+            setAlert({status: "error", message: error.response.data.message || "error"})
         }
     }
 

@@ -14,7 +14,12 @@ export const AuthProvider = ({children}) => {
                 const res = await axios.get("http://localhost:8000/api/users/check-auth", {withCredentials: true});
                 if(res.data.loggedIn){
                     setAuth(true);
-                    setUser(res.data.user);
+                    if(res.data?.user){
+                        setUser(res.data.user);
+                    } else {
+                        setAuth(false);
+                        setUser({});
+                    }
                 }
             } catch (error) {
                 setAuth(false);

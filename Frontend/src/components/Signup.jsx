@@ -2,10 +2,12 @@ import { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext.jsx';
+import { AlertContext } from '../context/AlertContext.jsx';
 
 function Signup() {
   const navigate = useNavigate();
-  const { auth, setAuth, user } = useContext(AuthContext);
+  const {setAlert} = useContext(AlertContext);
+  const { auth, setAuth, setUser } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [fullname, setFullname] = useState('');
   const [fullnameError, setFullnameError] = useState('');
@@ -38,10 +40,12 @@ function Signup() {
 
     try {
       const response = await axios.post("http://localhost:8000/api/users/register", { email, fullname, password }, {withCredentials: true})
-        console.log(response.data.message);
+      setAlert({ status: 'success', message: response.data.message || ""})
+      setAuth(true);
+      setUser(response?.data?.user)
         navigate('/');
     } catch (error) {
-      console.log(error.response.data.message);
+      setAlert({ status: 'error', message: error.response.data.message || "error"})
     }
   }
   return (
