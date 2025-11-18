@@ -23,7 +23,7 @@ function Navbar() {
   return (
     <header className='h-fit flex justify-between p-3 md:px-4 lg:px-5 border-b-2'>
       {/* Logo and name */}
-      <Link to="/home" className='flex gap-2 cursor-pointer'>
+      <Link to="/" className='flex gap-2 cursor-pointer'>
         <div className='text-3xl lg:text-5xl'><FontAwesomeIcon icon={["fas", "book-open"]} /></div>
         <div className='hidden lg:block flex-col'>
           <h1 className='text-2xl font-bold h-7'>ExamVault</h1>

@@ -19,7 +19,7 @@ function UploadPaper() {
                 <label className='text-base font-medium text-slate-900' htmlFor="fileUpload">Upload File</label>
                 <div className='rounded-lg shadow-sm border-2 border-dashed transition-all duration-200 border-slate-300 cursor-pointer mt-3' onClick={() => document.getElementById("fileUpload").click()}>
                   <div className='flex items-center justify-center p-8'>
-                    <input type="file" className='hidden' accept='.pdf,.png,.jpg,.jpeg' id='fileUpload' />
+                    <input type="file" className='hidden' required accept='.pdf,.png,.jpg,.jpeg' id='fileUpload' name='paperfile' />
                     <div className='text-center'>
                       <div className='w-16 h-16 bg-blue-50 rounded-2xl mx-auto mb-4 flex items-center justify-center text-3xl'>
                         <FontAwesomeIcon icon={["fas", "arrow-up-from-bracket"]} />
@@ -49,9 +49,10 @@ function UploadPaper() {
                   <input className='flex h-10 w-full rounded-md border bg-background px-3 py-2 text-base md:text-sm border-slate-300 focus:border-slate-900' type="text" placeholder='e.g., CS101, MATH201' />
                 </div>
               </div>
-              <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mt-5'>
-                <div className='space-y-2'>
-                  <label className=' text-base font-medium text-slate-900' htmlFor="">Exam Year *</label>
+              
+              <div className='flex justify-between gap-6 mt-5'>
+                <div className='w-full space-y-2'>
+                  <label className='w-full text-base font-medium text-slate-900' htmlFor="">Exam Year *</label>
                   <select className='flex h-10 w-full items-center justify-between rounded-md border bg-background px-3 py-2 text-sm border-slate-300 focus:border-slate-900' name="" id="">
                     <option value="2025">2025</option>
                     <option value="2024">2024</option>
@@ -64,21 +65,8 @@ function UploadPaper() {
                   </select>
                 </div>
 
-                <div className='space-y-2'>
-                  <label className=' text-base font-medium text-slate-900' htmlFor="">Semester *</label>
-                  <select className='flex h-10 w-full items-center justify-between rounded-md border bg-background px-3 py-2 text-sm border-slate-300 focus:border-slate-900' name="" id="">
-                    <option value="Semester 1">Semester 1</option>
-                    <option value="Semester 2">Semester 2</option>
-                    <option value="Semester 3">Semester 3</option>
-                    <option value="Semester 4">Semester 4</option>
-                    <option value="Semester 5">Semester 5</option>
-                    <option value="Semester 6">Semester 6</option>
-                    <option value="Semester 7">Semester 7</option>
-                    <option value="Semester 8">Semester 8</option>
-                  </select>
-                </div>
 
-                <div className='space-y-2'>
+                <div className='w-full space-y-2'>
                   <label className=' text-base font-medium text-slate-900' htmlFor="">Exam Type *</label>
                   <select className='flex h-10 w-full items-center justify-between rounded-md border bg-background px-3 py-2 text-sm border-slate-300 focus:border-slate-900' name="" id="">
                     <option value="Midterm">Midterm</option>
@@ -90,6 +78,7 @@ function UploadPaper() {
 
                 </div>
               </div>
+
               <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-5'>
                 <div className='space-y-2'>
                   <label className='text-base font-medium text-slate-900' htmlFor="">Professor Name</label>

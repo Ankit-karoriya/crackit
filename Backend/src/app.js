@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import userRouter from './routers/user.router.js';
 import cookieParser from 'cookie-parser';
+import paperRouter from './routers/paper.router.js'
 
 const app = express();
 
@@ -16,5 +17,6 @@ app.use(express.static("public"));
 app.use(cookieParser());
 
 app.use("/api/users", userRouter);
+app.use("/api/paper", paperRouter);
 
 export {app};

@@ -1,8 +1,13 @@
 import mongoose from "mongoose";
 
 const paperSchema = new mongoose.Schema({
-    paper: {
-        type: string,  // cloudinary
+    paperfile: {
+        type: String,  // cloudinary
+        required: true
+    },
+    uploader: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
         required: true
     },
     papertitle: {
@@ -14,7 +19,7 @@ const paperSchema = new mongoose.Schema({
         required: true
     },
     university: {
-        type: string,
+        type: String,
         required: true
     },
     examyear: {
@@ -22,7 +27,7 @@ const paperSchema = new mongoose.Schema({
         required: true
     },
     examtype: {
-        type: string,
+        type: String,
         enum: ["Midterm", "Final", "Quiz", "Assignment", "Practice"],
         required: true
     },
@@ -32,7 +37,16 @@ const paperSchema = new mongoose.Schema({
     subjectcode: {
         type: String
     },
-    semester: {
-        type: Number
+    status: {
+        type: String,
+        enum: ["Approved", "Pending", "Rejected"],
+        required: true
     },
+    tags: [
+        {
+            type: String
+        }
+    ]
 }, {timestamps: true})
+
+export const Paper = mongoose.model("Paper", paperSchema);
