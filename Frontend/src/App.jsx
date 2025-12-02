@@ -9,6 +9,9 @@ import Login from './components/Login.jsx'
 import { AuthProvider, AuthContext } from './context/AuthContext.jsx'
 import { AlertContext, AlertProvider } from './context/AlertContext.jsx'
 import Alert from './components/Alert.jsx'
+import { PendingPaperProvider } from './context/PendingPapersContext.jsx'
+import { ApprovedPaperProvider } from './context/ApprovedPapersContext.jsx'
+import { RejectedPaperProvider } from './context/RejectedPapersContext.jsx'
 
 function Auth() {
   const { auth } = useContext(AuthContext);
@@ -20,7 +23,12 @@ function Auth() {
         <Route path='/' element={<Layout />}>
           <Route index element={auth ? <HomePage /> : <Navigate to='/login' />} />
           <Route path='/upload' element={<UploadPaper />} />
-          <Route path='/admin' element={<AdminPanel />} />
+          <Route path='/admin' element={
+            <PendingPaperProvider>
+              <RejectedPaperProvider>
+                <AdminPanel />
+              </RejectedPaperProvider>
+            </PendingPaperProvider>} />
         </Route>
         <Route path='/register' element={<Signup />} />
         <Route path='/login' element={<Login />} />
@@ -33,7 +41,9 @@ function App() {
   return (
     <AuthProvider>
       <AlertProvider>
-        <Auth />
+        <ApprovedPaperProvider>
+          <Auth />
+        </ApprovedPaperProvider>
       </AlertProvider>
     </AuthProvider>
   )

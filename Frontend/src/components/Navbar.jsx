@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { AuthContext } from '../context/AuthContext';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AlertContext } from '../context/AlertContext';
 
 function Navbar() {
@@ -59,7 +59,7 @@ function Navbar() {
       <div className='flex gap-5 justify-center items-center'>
         <div className='hidden lg:flex flex-col gap-0'>
           <p className='text-lg font-semibold h-6'>{user?.fullname || ""}</p>
-          <p className='text-sm text-gray-500 text-right'>admin</p>
+          {/* <p className='text-sm text-gray-500 text-right'>admin</p> */}
         </div>
         <div className='flex bg-orange-400 text-white h-10 w-10 rounded-full items-center justify-center text-lg font-semibold'>{user?.fullname?.[0]?.toUpperCase() || ""}</div>
         <button

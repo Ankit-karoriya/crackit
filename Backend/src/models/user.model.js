@@ -15,7 +15,14 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
-    }
+    },
+    downloads: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Paper",
+            default: []
+        }
+    ]
 }, { timestamps: true })
 
 userSchema.pre("save", async function(next){

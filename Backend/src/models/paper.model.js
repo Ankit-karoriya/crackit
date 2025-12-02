@@ -46,7 +46,11 @@ const paperSchema = new mongoose.Schema({
         {
             type: String
         }
-    ]
+    ],
+    downloads: {
+        type: Number,
+        default: 0
+    }
 }, {timestamps: true})
 
 export const Paper = mongoose.model("Paper", paperSchema);

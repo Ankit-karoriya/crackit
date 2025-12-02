@@ -26,19 +26,19 @@ const register = async (req, res) => {
             return res.status(500).json({ message: "Registration failed, User is not registered" })
         }
 
-        const accessToken = generateAccessToken({email, fullname});
+        const accessToken = generateAccessToken({ email, fullname });
 
         return res
-        .status(201)
-        .cookie("AccessToken", accessToken, {httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: 'strict'})
-        .json({
-            message: "User registered successfully",
-            user: {
-                id: userCreated._id,
-                email: userCreated.email,
-                fullname: userCreated.fullname
-            }
-        })
+            .status(201)
+            .cookie("AccessToken", accessToken, { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: 'strict' })
+            .json({
+                message: "User registered successfully",
+                user: {
+                    id: userCreated._id,
+                    email: userCreated.email,
+                    fullname: userCreated.fullname
+                }
+            })
 
     } catch (error) {
         return res.status(500).json({ message: "Something went wrong in register controller" });
@@ -69,7 +69,7 @@ const login = async (req, res) => {
 
         return res
             .status(200)
-            .cookie("AccessToken", accessToken, {httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: 'strict'})
+            .cookie("AccessToken", accessToken, { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: 'strict' })
             .json({ message: "User loggedin successfully", loginuser });
 
     } catch (error) {
@@ -81,11 +81,45 @@ const logout = async (req, res) => {
     try {
         return res
             .status(200)
-            .clearCookie("AccessToken", {httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: 'strict'})
+            .clearCookie("AccessToken", { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: 'strict' })
             .json({ message: "User Logout Successfully" });
     } catch (error) {
         res.status(500).json({ message: "Something went wrong in logout controller" });
     }
 }
 
-export { register, login, logout };
+const adminLogin = async (req, res) => {
+    try {
+        const { password } = req.body;
+        if (!password) {
+            return res.status(400).json({ message: "please enter password, password is required" });
+        }
+
+        if (!(password == process.env.ADMIN_PASSWORD)) {
+            return res.status(500).json({ message: "password is incorrect" });
+        }
+
+        res.cookie("adminToken", "admin-verified", {
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict",
+            maxAge: 24 * 60 * 60 * 1000
+        });
+
+        return res.status(200).json({ message: "User become admin" });
+    } catch (error) {
+        res.status(500).json({ message: "something went wrong" });
+    }
+}
+
+const checkAdmin = (req, res) => {
+  const token = req.cookies.adminToken;
+
+  if (token === "admin-verified") {
+    return res.status(200).json({ isAdmin: true });
+  }
+
+  return res.status(401).json({ isAdmin: false });
+};
+
+export { register, login, logout, adminLogin, checkAdmin };

@@ -1,5 +1,5 @@
 import express from 'express';
-import { login, logout, register } from '../controllers/user.controller.js';
+import { adminLogin, checkAdmin, login, logout, register } from '../controllers/user.controller.js';
 import verifyJWT from '../utils/jwtVerify.js';
 
 const router = express.Router();
@@ -9,7 +9,10 @@ router.route('/login').post(login);
 router.route('/logout').post(logout);
 
 router.get('/check-auth', verifyJWT, (req, res) => {
-    res.status(200).json({ loggedIn: true, user: {email: req.user.user.email, fullname: req.user.user.fullname}});
+    res.status(200).json({ loggedIn: true, user: { email: req.user.user.email, fullname: req.user.user.fullname } });
 })
+
+router.post("/admin-login", adminLogin);
+router.get("/check-admin", checkAdmin);
 
 export default router;

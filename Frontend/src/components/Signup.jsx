@@ -107,7 +107,7 @@ function Signup() {
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full py-2 mt-4 dark:bg-slate-200 dark:text-slate-500 dark:hover:bg-slate-300 bg-slate-500 text-white font-semibold rounded-lg hover:bg-slate-600 transition duration-200"
+          className="w-full py-2 mt-4 dark:bg-slate-50 dark:text-slate-700 dark:hover:bg-slate-300 bg-slate-500 text-white font-semibold rounded-lg hover:bg-slate-600 transition duration-200"
         >
           Sign Up
         </button>

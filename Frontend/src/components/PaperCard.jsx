@@ -1,6 +1,19 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import axios from 'axios'
 
-function PaperCard({examName, numberofDownloads, paperName, subject, university, year, subjectCode, faculty}) {
+function PaperCard({paperId, paperFile, examName, numberofDownloads, paperName, subject, university, year, subjectCode, faculty}) {
+    const handelDownload = async () => {
+        try {
+            await axios.post(`http://localhost:8000/api/paper/download/${paperId}`,{},  {withCredentials: true});
+
+            const link = document.createElement("a");
+            link.href = paperFile;
+            link.download = paperName;
+            link.click();
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <>
             <div className='rounded-lg shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 bg-white/80 hover:bg-white/95 max-w-80 p-5'>
@@ -25,16 +38,16 @@ function PaperCard({examName, numberofDownloads, paperName, subject, university,
                         <FontAwesomeIcon icon={["fas", "calendar"]} />
                         <span>{year}</span>
                     </div>
-                    <div className='p-1 border border-gray-300 rounded-full text-xs font-semibold'>{subjectCode}</div>
+                    {subjectCode && <div className='p-1 border border-gray-300 rounded-full text-xs font-semibold'>{subjectCode}</div>}
                 </div>
                 <div className='flex items-center text-sm text-slate-600'>
                     <FontAwesomeIcon icon={["fas", "user"]} />
                     <span>{faculty}</span>
                 </div>
-                <button className='bg-slate-800 hover:bg-slate-700 hover:text-gray-200 text-white flex flex-row justify-center gap-2 items-center rounded-lg p-2 transition-all duration-200'>
-                    <FontAwesomeIcon icon={["fas", "download"]} />
+                <a onClick={handelDownload} className='bg-slate-800 hover:bg-slate-700 hover:text-gray-200 text-white flex flex-row justify-center gap-2 items-center rounded-lg p-2 transition-all duration-200 cursor-pointer'>
+                    <FontAwesomeIcon icon={["fas", "eye"]} />
                     <span>Download Paper</span>
-                </button>
+                </a>
             </div>
             </div>
         </>

@@ -36,7 +36,7 @@ function Alert({ alertStatus, message }) {
     return (
         <>
             {visible &&
-                <div role="alert" className={`alert alert-${alertStatus} ${color} flex items-center absolute right-5 top-5 gap-3 p-3 rounded-xl`}>
+                <div role="alert" className={`alert alert-${alertStatus} ${color} flex fixed items-center right-5 top-5 gap-3 p-3 rounded-xl`}>
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-9 w-9 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={d} />
                     </svg>
