@@ -1,12 +1,16 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
 import { useState, useContext } from 'react';
-import {useNavigate} from 'react-router-dom';
-import {AlertContext} from '../context/AlertContext.jsx';
+import { useNavigate } from 'react-router-dom';
+import { AlertContext } from '../context/AlertContext.jsx';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function UploadPaper() {
   const navigate = useNavigate();
-  const {setAlert} = useContext(AlertContext);
+  const { setAlert } = useContext(AlertContext);
+
+
+  const currentYear = new Date().getFullYear();
 
   const [paperTitle, setPaperTitle] = useState('');
   const [university, setUniversity] = useState('');
@@ -14,10 +18,10 @@ function UploadPaper() {
   const [courseCode, setCourseCode] = useState('');
   const [professorName, setProfessorName] = useState('');
   const [tag, setTag] = useState('');
-  const [examYear, setExamyear] = useState(2025);
+  const [examYear, setExamyear] = useState(currentYear);
   const [examType, setExamType] = useState('Midterm');
   const [file, setFile] = useState(null);
-  const [isSubmitting , setIsSubmitting ] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
 
   const handleSubmit = async (e) => {
@@ -37,15 +41,21 @@ function UploadPaper() {
     formData.append("tags", tag);
 
     try {
-      const response = await axios.post('http://localhost:8000/api/paper/upload', formData, { headers: { "Content-Type": "multipart/form-data" }, withCredentials: true });
+      const response = await axios.post(`${BASE_URL}/api/paper/upload`, formData, { headers: { "Content-Type": "multipart/form-data" }, withCredentials: true });
 
       setAlert({ status: 'success', message: response?.data?.message })
       setIsSubmitting(false);
+      navigate("/");
     } catch (error) {
-      console.log(error)
-      setAlert({status: 'error', message: error.response?.data?.message});
+      console.error(error)
+      setAlert({ status: 'error', message: error.response?.data?.message });
       setIsSubmitting(false);
     }
+  }
+
+  const years = [];
+  for (let y = currentYear; y >= 2000; y--) {
+    years.push(y);
   }
 
   return (
@@ -159,14 +169,11 @@ function UploadPaper() {
                     value={examYear}
                     onChange={(e) => setExamyear(e.target.value)}
                   >
-                    <option value="2025">2025</option>
-                    <option value="2024">2024</option>
-                    <option value="2023">2023</option>
-                    <option value="2022">2022</option>
-                    <option value="2021">2021</option>
-                    <option value="2020">2020</option>
-                    <option value="2019">2019</option>
-                    <option value="2018">2018</option>
+                    {years.map((year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -218,11 +225,11 @@ function UploadPaper() {
 
               {/* button */}
               <div className='w-full p-5 mt-5 flex justify-end'>
-                <button 
-                type='submit' 
-                className={`bg-slate-800 text-white w-fit p-3 rounded-lg flex gap-3 items-center ${isSubmitting ? "bg-slate-600 cursor-not-allowed" : ""}`}>
+                <button
+                  type='submit'
+                  className={`bg-slate-800 text-white w-fit p-3 rounded-lg flex gap-3 items-center ${isSubmitting ? "bg-slate-600 cursor-not-allowed" : ""}`}>
                   <FontAwesomeIcon icon={["fas", "arrow-up-from-bracket"]} />
-                  <p>Submit for Review</p>
+                  <p>{isSubmitting ? "Submitting..." : "Submit for Review"}</p>
                 </button>
               </div>
             </form>

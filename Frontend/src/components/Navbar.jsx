@@ -2,8 +2,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { AuthContext } from '../context/AuthContext';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { AlertContext } from '../context/AlertContext';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function Navbar() {
   const {user, setAuth, setUser} = useContext(AuthContext);
@@ -11,7 +12,10 @@ function Navbar() {
   const navigate = useNavigate();
   const handleLogout = async () => {
     try {
-      const res = await axios.post("http://localhost:8000/api/users/logout", {},  {withCredentials: true});
+      const confirmed = window.confirm("Are you sure you want to logout?");
+      if (!confirmed) return;
+
+      const res = await axios.post(`${BASE_URL}/api/users/logout`, {},  {withCredentials: true});
       setAuth(false);
       setUser({});
       setAlert({ status: 'success', message: res?.data?.message || ""})
@@ -61,7 +65,7 @@ function Navbar() {
           <p className='text-lg font-semibold h-6'>{user?.fullname || ""}</p>
           {/* <p className='text-sm text-gray-500 text-right'>admin</p> */}
         </div>
-        <div className='flex bg-orange-400 text-white h-10 w-10 rounded-full items-center justify-center text-lg font-semibold'>{user?.fullname?.[0]?.toUpperCase() || ""}</div>
+        <Link to='/user' className='flex bg-orange-400 text-white h-10 w-10 rounded-full items-center justify-center text-lg font-semibold cursor-pointer'>{user?.fullname?.[0]?.toUpperCase() || ""}</Link>
         <button
           className='text-xl cursor-pointer hover:bg-gray-200 p-2 duration-200 hover:rounded-lg'
           onClick={handleLogout}

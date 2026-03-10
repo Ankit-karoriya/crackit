@@ -16,7 +16,17 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    university: {
+        type: String,
+    },
     downloads: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Paper",
+            default: []
+        }
+    ],
+    uploadedPapers: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Paper",

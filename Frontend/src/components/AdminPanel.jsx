@@ -9,6 +9,7 @@ import { AuthContext } from '../context/AuthContext.jsx';
 import ApprovedPaper from './ApprovedPaper.jsx';
 import RejectedPaper from './RejectedPaper.jsx';
 import { AlertContext } from '../context/AlertContext.jsx';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 
 function AdminPanel() {
@@ -16,7 +17,7 @@ function AdminPanel() {
   const { setAlert } = useContext(AlertContext)
   const { pendingPapers, setPendingPapers } = useContext(PendingPaperContext);
   const { approvedPapers, setApprovedPapers } = useContext(ApprovedPaperContext);
-  const { rejectedPapers, setrejectedPapers } = useContext(RejectedPaperContext);
+  const { rejectedPapers, setRejectedPapers } = useContext(RejectedPaperContext);
 
   const [viewPaper, setViewPaper] = useState('pending');
   const [password, setPassword] = useState('');
@@ -24,7 +25,7 @@ function AdminPanel() {
 
   const handleAdminLogin = async () => {
     try {
-      const res = await axios.post("http://localhost:8000/api/users/admin-login", { password: password }, { withCredentials: true });
+      const res = await axios.post(`${BASE_URL}/api/users/admin-login`, { password: password }, { withCredentials: true });
       setIsAdmin(true);
       setAlert({ status: 'success', message: res.data.message });
     } catch (error) {
@@ -37,7 +38,7 @@ function AdminPanel() {
     const verifyAdmin = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:8000/api/users/check-admin",
+          `${BASE_URL}/api/users/check-admin`,
           { withCredentials: true }
         );
         setIsAdmin(true);
@@ -52,10 +53,10 @@ function AdminPanel() {
   useEffect(() => {
     const pendingPaperData = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/paper/pending-papers", { withCredentials: true });
+        const res = await axios.get(`${BASE_URL}/api/paper/pending-papers`, { withCredentials: true });
         setPendingPapers(res.data.data);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
 
@@ -65,10 +66,10 @@ function AdminPanel() {
   useEffect(() => {
     const approvedPaperData = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/paper/approved-papers", { withCredentials: true });
+        const res = await axios.get(`${BASE_URL}/api/paper/approved-papers`, { withCredentials: true });
         setApprovedPapers(res.data.data);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
 
@@ -78,10 +79,10 @@ function AdminPanel() {
   useEffect(() => {
     const rejectedPaperData = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/paper/rejected-papers", { withCredentials: true });
-        setrejectedPapers(res.data.data);
+        const res = await axios.get(`${BASE_URL}/api/paper/rejected-papers`, { withCredentials: true });
+        setRejectedPapers(res.data.data);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
 

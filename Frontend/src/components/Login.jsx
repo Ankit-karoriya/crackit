@@ -3,6 +3,7 @@ import {Link, useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import { AlertContext } from '../context/AlertContext.jsx';
 import { AuthContext } from '../context/AuthContext.jsx';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function Login() {
     const navigate = useNavigate();
@@ -25,7 +26,7 @@ function Login() {
         e.preventDefault();
 
         try {
-            const response = await axios.post("http://localhost:8000/api/users/login", {email, password}, {withCredentials: true});
+            const response = await axios.post(`${BASE_URL}/api/users/login`, {email, password}, {withCredentials: true});
             setAuth(true);
             setUser(response?.data?.loginuser);
             setAlert({status: "success", message: response.data.message || ""});
@@ -37,17 +38,19 @@ function Login() {
 
 
   return (
-    <div className='flex h-screen items-center justify-center dark:bg-gray-800'>
+    <div className='flex flex-col h-screen items-center justify-center'>
+    <h1 className='text-3xl font-bold text-slate-900 pt-20'>CrackIt - Exam Paper Sharing Platform</h1>
+    <div className='flex h-screen items-center justify-center w-full'>
             <form
-                className='bg-white dark:bg-gray-600 shadow-2xl rounded-2xl p-8 w-full max-w-md'
+                className='bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md border'
                 onSubmit={handleSubmit}
             >
-                <h1 className='text-2xl text-center text-slate-500 dark:text-slate-100 font-bold'>Login</h1>
+                <h1 className='text-2xl text-center text-slate-500 font-bold'>Login</h1>
                 <br />
 
                 {/* Email */}
                 <div className="mb-4">
-                    <label className="block text-gray-700 dark:text-gray-300 mb-1">Email</label>
+                    <label className="block text-gray-700 mb-1">Email</label>
                     <input
                         type="email"
                         name="email"
@@ -61,7 +64,7 @@ function Login() {
 
                 {/* Password */}
                 <div className="mb-4">
-                    <label className="block text-gray-700 dark:text-gray-300 mb-1">Password</label>
+                    <label className="block text-gray-700 mb-1">Password</label>
                     <input
                         type="password"
                         name="password"
@@ -76,25 +79,26 @@ function Login() {
                 {/* Submit Button */}
                 <button
                     type="submit"
-                    className="w-full py-2 mt-4 bg-slate-500 dark:bg-slate-50 dark:text-slate-700 dark:hover:bg-slate-300 text-white font-semibold rounded-lg hover:bg-slate-600 transition duration-200"
+                    className="w-full py-2 mt-4 bg-slate-500 text-white font-semibold rounded-lg hover:bg-slate-600 transition duration-200"
                 >
                     Login
                 </button>
 
                 {/* Text & Button */}
-                <div className="mt-2 flex dark:text-slate-300">
+                <div className="mt-2 flex">
                     <p>
                         New user?
                     </p>
                     <Link
                         to="/register"
-                        className="text-blue-500 dark:text-blue-200 underline cursor-pointer ml-1"
+                        className="text-blue-500 underline cursor-pointer ml-1"
                     >
                         Signup
                     </Link>
 
                 </div>
             </form>
+        </div>
         </div>
   )
 }

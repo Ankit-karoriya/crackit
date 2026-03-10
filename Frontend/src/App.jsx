@@ -1,17 +1,27 @@
 import { useContext } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
+
+// pages
+import Login from './components/Login.jsx'
+import Signup from './components/Signup.jsx'
+import OtpVerify from './components/OtpVerify.jsx'
+import Alert from './components/Alert.jsx'
 import HomePage from './components/HomePage.jsx'
 import UploadPaper from './components/UploadPaper.jsx'
 import AdminPanel from './components/AdminPanel.jsx'
 import Layout from './components/Layout.jsx'
-import Signup from './components/Signup.jsx'
-import Login from './components/Login.jsx'
+import User from './components/User.jsx'
+import UserLayout from './components/UserLayout.jsx'
+import UserUploadedPapers from './components/UserUploadedPapers.jsx'
+import ViewPapers from './components/ViewPapers.jsx'
+
+//contexts
 import { AuthProvider, AuthContext } from './context/AuthContext.jsx'
 import { AlertContext, AlertProvider } from './context/AlertContext.jsx'
-import Alert from './components/Alert.jsx'
 import { PendingPaperProvider } from './context/PendingPapersContext.jsx'
 import { ApprovedPaperProvider } from './context/ApprovedPapersContext.jsx'
 import { RejectedPaperProvider } from './context/RejectedPapersContext.jsx'
+import { UserDataProvider } from './context/userData.jsx'
 
 function Auth() {
   const { auth } = useContext(AuthContext);
@@ -29,8 +39,16 @@ function Auth() {
                 <AdminPanel />
               </RejectedPaperProvider>
             </PendingPaperProvider>} />
+
+          <Route path="/user" element={<UserLayout />}>
+            <Route index element={<User />} />
+            <Route path="uploads" element={<UserUploadedPapers />} />
+            <Route path="papers" element={<ViewPapers />} />
+          </Route>
+
         </Route>
         <Route path='/register' element={<Signup />} />
+        <Route path='/verify-otp' element={<OtpVerify />} />
         <Route path='/login' element={<Login />} />
       </Routes>
     </>

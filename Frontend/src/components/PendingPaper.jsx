@@ -2,28 +2,36 @@ import { useContext } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { PendingPaperContext } from '../context/PendingPapersContext.jsx'
 import axios from 'axios';
+import { AlertContext } from '../context/AlertContext.jsx';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function PendingPaper({ index }) {
-  const { pendingPapers } = useContext(PendingPaperContext);
-  console.log(pendingPapers);
+  const { pendingPapers, setPendingPapers } = useContext(PendingPaperContext);
+  const { setAlert } = useContext(AlertContext);
 
-  const approvePaper = async() => {
+  const approvePaper = async () => {
     try {
-      const res = await axios.post(`http://localhost:8000/api/paper/approve-paper/${pendingPapers[index]?._id}`, {}, {withCredentials: true});
+      const confirmation = window.confirm(`Are you sure you want to approve ${pendingPapers[index]?.papertitle || "this"} paper? This action cannot be undone.`);
+      if (!confirmation) return;
 
-      console.log(res.data);
+      const res = await axios.post(`${BASE_URL}/api/paper/approve-paper/${pendingPapers[index]?._id}`, {}, { withCredentials: true });
+      setAlert({ status: "success", message: res.data.message || "" });
+      setPendingPapers(prev => prev.filter((_, i) => i !== index));
     } catch (error) {
-      console.log(error.res);
+      console.error(error);
     }
   }
 
-  const rejectPaper = async() => {
+  const rejectPaper = async () => {
     try {
-      const res = await axios.post(`http://localhost:8000/api/paper/reject-paper/${pendingPapers[index]?._id}`, {}, {withCredentials: true});
+      const confirmation = window.confirm(`Are you sure you want to reject ${pendingPapers[index]?.papertitle || "this"} paper? This action cannot be undone.`);
+      if (!confirmation) return;
 
-      console.log(res.data);
+      const res = await axios.post(`${BASE_URL}/api/paper/reject-paper/${pendingPapers[index]?._id}`, {}, { withCredentials: true });
+      setAlert({ status: "success", message: res.data.message || "" });
+      setPendingPapers(prev => prev.filter((_, i) => i !== index));
     } catch (error) {
-      console.log(error.res);
+      console.error(error);
     }
   }
 
@@ -56,18 +64,18 @@ function PendingPaper({ index }) {
         <button
           className='justify-center text-sm font-medium border bg-background hover:bg-gray-200 h-9 rounded-md px-3 flex items-center gap-2 transition-all duration-200'
           onClick={() => window.open(pendingPapers[index]?.paperfile || "", "_blank")}
-          >
+        >
           <FontAwesomeIcon className='' icon={["fas", "eye"]} />
           view paper
         </button>
 
         <button
-        onClick={approvePaper}
-        className='justify-center text-sm font-medium border bg-green-600 text-white hover:bg-green-500 h-9 rounded-md px-3 flex items-center gap-2 transition-all duration-200'
+          onClick={approvePaper}
+          className='justify-center text-sm font-medium border bg-green-600 text-white hover:bg-green-500 h-9 rounded-md px-3 flex items-center gap-2 transition-all duration-200'
         >
           <FontAwesomeIcon icon={["fas", "circle-check"]} />
           Approve
-          </button>
+        </button>
 
         <button onClick={rejectPaper} className='justify-center text-sm font-medium border bg-red-600 text-white hover:bg-red-500 h-9 rounded-md px-3 flex items-center gap-2 transition-all duration-200'><FontAwesomeIcon icon={["fas", "circle-xmark"]} />Reject</button>
       </div>

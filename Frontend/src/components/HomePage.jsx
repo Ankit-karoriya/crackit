@@ -4,6 +4,7 @@ import { useContext, useEffect } from 'react'
 import axios from 'axios';
 import { useState } from 'react';
 import { ApprovedPaperContext } from '../context/ApprovedPapersContext.jsx';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function HomePage() {
   const { approvedPapers, setApprovedPapers } = useContext(ApprovedPaperContext);
@@ -15,10 +16,10 @@ function HomePage() {
   useEffect(() => {
     const mostDownloadedPapersResponse = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/paper/most-downloaded-papers", { withCredentials: true });
+        const res = await axios.get(`${BASE_URL}/api/paper/most-downloaded-papers`, { withCredentials: true });
         setMostDownloadedPapers(res.data.data);
       } catch (error) {
-        console.log(error.response.data.message);
+        console.error(error);
       }
     }
     mostDownloadedPapersResponse();
@@ -27,12 +28,12 @@ function HomePage() {
   useEffect(() => {
     const paperData = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/paper/papers-data", { withCredentials: true });
+        const res = await axios.get(`${BASE_URL}/api/paper/papers-data`, { withCredentials: true });
         setPaperData(res.data.data);
         setUniversityFilter(res.data.data?.universities?.[0]);
         setSubjectFilter(res.data.data?.subjects?.[0])
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
 
@@ -42,10 +43,10 @@ function HomePage() {
   useEffect(() => {
     const approvedPaperData = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/paper/approved-papers", { withCredentials: true });
+        const res = await axios.get(`${BASE_URL}/api/paper/approved-papers`, { withCredentials: true });
         setApprovedPapers(res.data.data);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
 
@@ -58,24 +59,33 @@ function HomePage() {
   const [subjectFilter, setSubjectFilter] = useState("");
 
   useEffect(() => {
+    if (!universityFilter || !subjectFilter) return;
+
     const applyFilter = async () => {
       try {
-        const res = await axios.post("http://localhost:8000/api/paper/filter-papers", 
+        const res = await axios.post(`${BASE_URL}/api/paper/filter-papers`,
           {
             university: universityFilter,
             examType: examTypeFilter,
             examYear: examYearFilter,
             subject: subjectFilter
-          }, 
-          {withCredentials: true}
+          },
+          { withCredentials: true }
         )
         setFilterPapers(res.data.data);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
     applyFilter();
   }, [universityFilter, examTypeFilter, examYearFilter, subjectFilter])
+
+  const currentYear = new Date().getFullYear();
+
+  const years = [];
+  for (let y = currentYear; y >= 2000; y--) {
+    years.push(y);
+  }
   return (
     <div>
 
@@ -98,28 +108,28 @@ function HomePage() {
           <div className='rounded-lg border border-gray-300 p-5 bg-white/80 shadow-lg flex flex-row justify-between items-center'>
             <div>
               <p className='text-md font-sans font-semibold text-gray-600'>Total Papers</p>
-              <p className='text-3xl font-bold'>{approvedPapers?.length || ""}</p>
+              <p className='text-3xl font-bold'>{approvedPapers?.length || "None"}</p>
             </div>
             <FontAwesomeIcon className='p-2 md:p-4 md:text-3xl bg-blue-100 text-blue-600 rounded-lg' icon={["fas", "file"]} />
           </div>
           <div className='rounded-lg border border-gray-300 p-5 bg-white/80 shadow-lg flex flex-row justify-between items-center'>
             <div>
               <p className='text-md font-sans font-semibold text-gray-600'>Universities</p>
-              <p className='text-3xl font-bold'>{paperData?.universities?.length || ""}</p>
+              <p className='text-3xl font-bold'>{paperData?.universities?.length || "None"}</p>
             </div>
             <FontAwesomeIcon className='p-2 md:p-4 md:text-3xl bg-green-100 text-green-600 rounded-lg' icon={["fas", "building-columns"]} />
           </div>
           <div className='rounded-lg border border-gray-300 p-5 bg-white/80 shadow-lg flex flex-row justify-between items-center'>
             <div>
               <p className='text-md font-sans font-semibold text-gray-600'>Total Downloads</p>
-              <p className='text-3xl font-bold'>{paperData?.downloads || ""}</p>
+              <p className='text-3xl font-bold'>{paperData?.downloads || "None"}</p>
             </div>
             <FontAwesomeIcon className='p-2 md:p-4 md:text-3xl bg-purple-100 text-purple-600 rounded-lg' icon={["fas", "download"]} />
           </div>
           <div className='rounded-lg border border-gray-300 p-5 bg-white/80 shadow-lg flex flex-row justify-between items-center'>
             <div>
               <p className='text-md font-sans font-semibold text-gray-600'>Total Subjects</p>
-              <p className='text-3xl font-bold'>{paperData?.subjects?.length || ""}</p>
+              <p className='text-3xl font-bold'>{paperData?.subjects?.length || "None"}</p>
             </div>
             <FontAwesomeIcon className='p-2 md:p-4 md:text-3xl bg-orange-100 text-orange-600 rounded-lg' icon={["fas", "arrow-trend-up"]} />
           </div>
@@ -137,7 +147,7 @@ function HomePage() {
           </div>
           <div className='grid grid-cols-1 md:grid-cols-4 gap-6'>
             {
-              mostDownloadedPapers?.map((value, index) => <PaperCard key={index} paperId={value._id} examName={value?.examtype || ""} paperFile={value?.paperfile} numberofDownloads={value?.downloads || ""} paperName={value?.papertitle || ""} subject={value?.subject || ""} university={value?.university || ""} year={value?.examyear || ""} subjectCode={value?.subjectcode || ""} faculty={value?.professor || ""} />)
+              mostDownloadedPapers?.map((value, index) => <PaperCard key={index} paperId={value._id} examName={value?.examtype || ""} paperFile={value?.paperfile} numberofDownloads={value?.downloads || ""} paperName={value?.papertitle || ""} subject={value?.subject || ""} university={value?.university || ""} year={value?.examyear || ""} subjectCode={value?.subjectcode || ""} faculty={value?.professor || ""} viewOrDownload="Download Paper" viewOrDownloadSymbol="download" />)
             }
           </div>
 
@@ -176,17 +186,11 @@ function HomePage() {
             <div className="flex flex-col gap-2">
               <span className='w-48 text-sm font-sans text-gray-500 font-semibold'>Year</span>
               <select onChange={(e) => setExamYearFilter(e.target.value)} className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="2025">2025</option>
-                <option value="2024">2024</option>
-                <option value="2023">2023</option>
-                <option value="2022">2022</option>
-                <option value="2021">2021</option>
-                <option value="2020">2020</option>
-                <option value="2019">2019</option>
-                <option value="2018">2018</option>
-                <option value="2017">2017</option>
-                <option value="2016">2016</option>
-                <option value="2015">2015</option>
+                {years.map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -209,7 +213,7 @@ function HomePage() {
           <p className='text-sm text-gray-500'>{filterPapers?.length} papers available</p>
           <div className='mt-5 flex gap-3 flex-wrap md:gap-7'>
             {
-              filterPapers?.map((value, index) => <PaperCard key={index} paperId={value._id} examName={value?.examtype || ""} numberofDownloads={value?.downloads || ""} paperName={value?.papertitle || ""} paperFile={value?.paperfile} subject={value?.subject || ""} university={value?.university || ""} year={value?.examyear || ""} subjectCode={value?.subjectcode || ""} faculty={value.professor || ""}/>)
+              filterPapers?.map((value, index) => <PaperCard key={index} paperId={value._id} examName={value?.examtype || ""} numberofDownloads={value?.downloads || ""} paperName={value?.papertitle || ""} paperFile={value?.paperfile} subject={value?.subject || ""} university={value?.university || ""} year={value?.examyear || ""} subjectCode={value?.subjectcode || ""} faculty={value.professor || ""} viewOrDownload="Download Paper" viewOrDownloadSymbol="download" />)
             }
           </div>
         </div>

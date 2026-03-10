@@ -31,7 +31,7 @@ const uploadPaper = async (req, res) => {
             tagArray = tags?.split(",").map(tag => tag.trim()).filter(tag => tag.length > 0);
         }
 
-        const user = await User.findById(req.user.user._id);
+        const user = await User.findOne({ email: req.user.user.email });
 
         const paperDetails = await Paper.create({
             papertitle,
@@ -43,9 +43,14 @@ const uploadPaper = async (req, res) => {
             subjectcode,
             tags: tagArray,
             status: "Pending",
-            uploader: user,
+            uploader: user._id,
             paperfile: uploadedPaper.secure_url
         })
+
+        await User.findByIdAndUpdate(user._id,
+            { $push: { uploadedPapers: paperDetails._id } },
+            { new: true }
+        )
 
         res.status(200).json({ message: "Question paper is uploaded successfully", data: paperDetails })
 
@@ -125,13 +130,13 @@ const downloadPaper = async (req, res) => {
 
 const mostDownloadedPApers = async (req, res) => {
     try {
-        const papers = await Paper.find({status: "Approved"}).sort({ downloads: -1 }).limit(5);
+        const papers = await Paper.find({ status: "Approved" }).sort({ downloads: -1 }).limit(5);
 
         if (!papers) {
             res.stats(500).json({ message: "papers didn't featched" })
         }
 
-        return res.status(200).json({ message: "Papers featched successfully", data: papers});
+        return res.status(200).json({ message: "Papers featched successfully", data: papers });
     } catch (error) {
         return res.stats(500).json({ message: "something went wrong while featching papers" });
     }
@@ -141,27 +146,40 @@ const getAllUniversitiesSubjectsDownloads = async (req, res) => {
     try {
         const response = await Paper.aggregate([
             {
+                $match: { status: "Approved" }
+            },
+            {
                 $group: {
                     _id: null,
-                    universities: {$addToSet: "$university"},
-                    subjects: {$addToSet: "$subject"},
-                    downloads: {$sum: "$downloads"}
+                    universities: { $addToSet: "$university" },
+                    subjects: { $addToSet: "$subject" },
+                    downloads: { $sum: "$downloads" }
                 }
             }
-        ])
+        ]);
 
-        res.status(200).json({message: "universities, subjects, downloads featched successfully", data: response[0]});
+        res.status(200).json({
+            message: "universities, subjects, downloads fetched successfully",
+            data: response[0] || {
+                universities: [],
+                subjects: [],
+                downloads: 0
+            }
+        });
+
     } catch (error) {
-        res.status(500).json({message: "Something went wrong while featching the total universities, subjects, downloads"});
+        res.status(500).json({
+            message: "Something went wrong while fetching the data"
+        });
     }
-}
+};
 
-const filterPapers = async(req, res) => {
+const filterPapers = async (req, res) => {
     try {
-        const {university, examType, examYear, subject} = req.body;
+        const { university, examType, examYear, subject } = req.body;
 
-        if([university, examType, examYear, subject].some((field) => field.trim === "")){
-            res.status(400).json({message: 'All fields are required'});
+        if (!university?.trim() || !examType?.trim() || !subject?.trim() || !examYear) {
+            return res.status(400).json({ message: "All fields are required" });
         }
 
         const papers = await Paper.find({
@@ -172,52 +190,73 @@ const filterPapers = async(req, res) => {
             status: "Approved"
         })
 
-        if(!papers){
-            res.status(404).json({message: "No papers with the same fields found"})
+        if (papers.length === 0) {
+            return res.status(200).json({ message: "No papers with the same fields found", data: papers });
         }
 
-        return res.status(200).json({message: "Filtered papers featched successfully", data: papers});
+        return res.status(200).json({ message: "Filtered papers featched successfully", data: papers });
     } catch (error) {
-        res.status(500).json({message: "Something went wrong while featching the filtered papers"});
+        res.status(500).json({ message: "Something went wrong while fetching the filtered papers" });
     }
 }
 
-const approvePaper = async(req, res) => {
+const approvePaper = async (req, res) => {
     try {
         const paperId = req.params?.paperId;
-        if(!paperId){
-            res.status(400).json({message: "Please selecte a paper to approve it"});
+        if (!paperId) {
+            res.status(400).json({ message: "Please selecte a paper to approve it" });
         }
 
-        const paper = await Paper.findByIdAndUpdate(paperId, {status: "Approved"});
+        const paper = await Paper.findByIdAndUpdate(paperId, { status: "Approved" });
 
-        if(!paper){
-            res.status(404).json({message: "Paper not found"});
+        if (!paper) {
+            res.status(404).json({ message: "Paper not found" });
         }
 
-        return res.status(200).json({message: "Paper Approved Successfully"});
+        return res.status(200).json({ message: "Paper Approved Successfully" });
     } catch (error) {
         console.log(error);
     }
 }
 
-const rejectPaper = async(req, res) => {
+const rejectPaper = async (req, res) => {
     try {
         const paperId = req.params?.paperId;
-        if(!paperId){
-            res.status(400).json({message: "Please selecte a paper to reject it"});
+        if (!paperId) {
+            res.status(400).json({ message: "Please selecte a paper to reject it" });
         }
 
-        const paper = await Paper.findByIdAndUpdate(paperId, {status: "Rejected"});
+        const paper = await Paper.findByIdAndUpdate(paperId, { status: "Rejected" });
 
-        if(!paper){
-            res.status(404).json({message: "Paper not found"});
+        if (!paper) {
+            res.status(404).json({ message: "Paper not found" });
         }
 
-        return res.status(200).json({message: "Paper Rejected Successfully"});
+        return res.status(200).json({ message: "Paper Rejected Successfully" });
     } catch (error) {
         console.log(error);
     }
 }
 
-export { uploadPaper, viewPendingPapers, viewApprovedPapers, viewRejectedPapers, mostDownloadedPApers, downloadPaper, filterPapers, getAllUniversitiesSubjectsDownloads,approvePaper, rejectPaper };
+const deletePaper = async (req, res) => {
+    try {
+        const paperId = req.params?.paperId;
+        if (!paperId) {
+            return res.status(400).json({ message: "Please selecte a paper to delete it" });
+        }
+
+        const paper = await Paper.findByIdAndDelete(paperId);
+
+        if (!paper) {
+            return res.status(404).json({ message: "Paper not found" });
+        }
+
+        await User.findByIdAndUpdate(paper.uploader, { $pull: { uploadedPapers: paperId } });
+
+        return res.status(200).json({ message: "Paper Deleted Successfully" });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export { uploadPaper, viewPendingPapers, viewApprovedPapers, viewRejectedPapers, mostDownloadedPApers, downloadPaper, filterPapers, getAllUniversitiesSubjectsDownloads, approvePaper, rejectPaper, deletePaper };

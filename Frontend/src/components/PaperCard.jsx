@@ -1,19 +1,28 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import axios from 'axios'
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-function PaperCard({paperId, paperFile, examName, numberofDownloads, paperName, subject, university, year, subjectCode, faculty}) {
+function PaperCard({paperId, paperFile, examName, numberofDownloads, paperName, subject, university, year, subjectCode, faculty, viewOrDownload, viewOrDownloadSymbol}) {
     const handelDownload = async () => {
-        try {
-            await axios.post(`http://localhost:8000/api/paper/download/${paperId}`,{},  {withCredentials: true});
-
-            const link = document.createElement("a");
-            link.href = paperFile;
-            link.download = paperName;
-            link.click();
-        } catch (error) {
-            console.log(error);
-        }
+    if (viewOrDownloadSymbol === "eye") {
+        window.open(paperFile, "_blank");
+        return;
     }
+
+    try {
+        await axios.post(
+            `${BASE_URL}/api/paper/download/${paperId}`,
+            {},
+            { withCredentials: true }
+        );
+
+        const downloadUrl = paperFile.replace("/upload/", "/upload/fl_attachment/");
+        window.open(downloadUrl);
+
+    } catch (error) {
+        console.error(error);
+    }
+};
     return (
         <>
             <div className='rounded-lg shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 bg-white/80 hover:bg-white/95 max-w-80 p-5'>
@@ -45,8 +54,8 @@ function PaperCard({paperId, paperFile, examName, numberofDownloads, paperName, 
                     <span>{faculty}</span>
                 </div>
                 <a onClick={handelDownload} className='bg-slate-800 hover:bg-slate-700 hover:text-gray-200 text-white flex flex-row justify-center gap-2 items-center rounded-lg p-2 transition-all duration-200 cursor-pointer'>
-                    <FontAwesomeIcon icon={["fas", "eye"]} />
-                    <span>Download Paper</span>
+                    <FontAwesomeIcon icon={["fas", `${viewOrDownloadSymbol}`]} />
+                    <span>{viewOrDownload}</span>
                 </a>
             </div>
             </div>
