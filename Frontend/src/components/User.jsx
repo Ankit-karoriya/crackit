@@ -6,30 +6,36 @@ import axios from 'axios';
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function User() {
-  const {userData, setUserData} = useContext(userDataContext);
+  const { userData, setUserData } = useContext(userDataContext);
 
   const [edit, setEdit] = useState(false);
   const [editedDetails, setEditedDetails] = useState({});
 
   useEffect(() => {
     // Fetch user data from api and set in context
-    if(userData) return;
+    if (userData) return;
 
     const fetchUserData = async () => {
-    try {
-      const res = await axios.get(`${BASE_URL}/api/users/me`, {withCredentials: true});
-      setUserData(res.data);
-    } catch (error) {
-      console.error(error);
+      try {
+        const res = await axios.get(`${BASE_URL}/api/users/me`, { withCredentials: true });
+        setUserData(res.data);
+      } catch (error) {
+        console.error(error);
+      }
     }
-  }
-  fetchUserData();
+    fetchUserData();
   }, [])
 
   const handleEditProfile = async () => {
     try {
-      const res = await axios.put(`${BASE_URL}/api/users/edit-profile`, editedDetails, {withCredentials: true});
-      setUserData({...userData, ...res.data.data});
+      const res = await axios.put(`${BASE_URL}/api/users/edit-profile`, editedDetails, { withCredentials: true });
+      setUserData({
+        ...userData,
+        user: {
+          ...userData.user,
+          ...res.data.data
+        }
+      });
       setEdit(false);
     } catch (error) {
       console.error(error);
@@ -92,17 +98,17 @@ function User() {
             <h2 className="text-2xl font-bold mb-4">User Profile</h2>
             <button onClick={() => setEdit(true)} className='py-1 px-2 w-fit h-fit text-xs font-semibold border border-green-800 bg-green-50 rounded-2xl text-green-700 cursor-pointer'>Edit profile</button>
           </div>
-          
+
 
           <div className="space-y-2">
             <p>
               <span className="font-semibold">Full Name:</span>{" "}
               {
                 edit ? (
-                  <input type="text" className='border-b-2 border-gray-300 outline-none' placeholder={userData?.user?.fullname || ""} onChange={(e) => setEditedDetails({...editedDetails, fullname: e.target.value})} />
+                  <input type="text" className='border-b-2 border-gray-300 outline-none' placeholder={userData?.user?.fullname || ""} onChange={(e) => setEditedDetails({ ...editedDetails, fullname: e.target.value })} />
                 ) : (userData?.user?.fullname || "Not available")
               }
-              
+
             </p>
 
             <p>
@@ -114,7 +120,7 @@ function User() {
               <span className="font-semibold">University:</span>{" "}
               {
                 edit ? (
-                  <input type="text" className='border-b-2 border-gray-300 outline-none' placeholder={userData?.user?.university || ""} onChange={(e) => setEditedDetails({...editedDetails, university: e.target.value})} />
+                  <input type="text" className='border-b-2 border-gray-300 outline-none' placeholder={userData?.user?.university || ""} onChange={(e) => setEditedDetails({ ...editedDetails, university: e.target.value })} />
                 ) : (userData?.user?.university || "Not available")
               }
             </p>

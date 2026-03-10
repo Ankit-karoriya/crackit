@@ -105,10 +105,11 @@ const verifyOtp = async (req, res) => {
             password: otpRecord.password
         });
 
-        const accessToken = generateAccessToken({
-            email: userCreated.email,
-            fullname: userCreated.fullname
-        });
+        // const accessToken = generateAccessToken({
+        //     email: userCreated.email,
+        //     fullname: userCreated.fullname
+        // });
+        const accessToken = generateAccessToken(userCreated);
 
         await Otp.deleteOne({ email });
 

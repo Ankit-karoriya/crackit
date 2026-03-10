@@ -183,10 +183,10 @@ const filterPapers = async (req, res) => {
         }
 
         const papers = await Paper.find({
-            university,
+            university: university.trim(),
             examyear: Number(examYear),
-            examtype: examType,
-            subject,
+            examtype: examType.trim(),
+            subject: subject.trim(),
             status: "Approved"
         })
 
